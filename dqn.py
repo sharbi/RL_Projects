@@ -120,8 +120,8 @@ class ExplorationExploitationScheduler(object):
 
         self.slope = -(self.eps_initial - self.eps_final) / self.eps_annealing_frames
         self.intercept = self.eps_initial - self.slope * self.replay_memory_start_size
-        self.slope_2 = -(self.eps_final - self.eps_final_frame)/
-                        (self.max_frames - self.eps_annealing_frames - self.replay_memory_start_size)
+        self.slope_2 = -(self.eps_final - self.eps_final_frame) \
+                        /(self.max_frames - self.eps_annealing_frames - self.replay_memory_start_size)
         self.intercept_2 = self.eps_final - self.slope_2 * self.max_frames
 
     def get_action(self, session, frame_number, state, evaluation=False):
@@ -130,7 +130,7 @@ class ExplorationExploitationScheduler(object):
             eps = self.eps_evaluation
         elif frame_number < self.replay_memory_start_size:
             eps = self.eps_initial
-        elif frame_number >= self.replay_memory_start_size and frame_number <
+        elif frame_number >= self.replay_memory_start_size and frame_number < \
                     self.replay_memory_start_size + self.eps_annealing_frames:
             eps = self.slope * self.frame_number + self.intercept
         elif frame_number >= self.replay_memory_start_size + self.eps_annealing_frames:
