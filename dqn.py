@@ -20,7 +20,7 @@ class FrameProcessor(object):
     def __init__(self, frame_height=84, frame_width=84):
         self.frame_height = frame_height
         self.frame_width = frame_width
-        self.frame = tf.placeholder(shape=[210, 160, 3], dtype=tf.uint8)
+        self.frame = tf.compat.v1.placeholder(shape=[210, 160, 3], dtype=tf.uint8)
         self.processed = tf.image.rgb_to_grayscale(self.frame)
         self.processed = tf.image.crop_to_bounding_box(self.processed, 34, 0, 160, 160)
         seld.processed = tf.image.resize_image(self.processed,
@@ -28,7 +28,7 @@ class FrameProcessor(object):
                                                 method=tf.image.ResizeMethod.NEAREST_NEIGHBOUR)
 
     def __call__(self, session, frame):
-        return self.processed(self.frame)
+        return session.run(self.processed, feed_dict={self.frame:frame})
 
 
 
@@ -43,7 +43,7 @@ class DQN(object):
         self.frame_width = frame_width
         self.agent_history_length = agent_history_length
 
-        self.input = tf.placeholder(shape=[None, self.frame_height,
+        self.input = tf.compat.v1.placeholder(shape=[None, self.frame_height,
                                     self.frame_width, self.agent_history_length])
 
         self.inputscaled = self.input/255
@@ -91,9 +91,9 @@ class DQN(object):
 
         self.best_actions = tf.argmax(self.q_values, 1)
 
-        self.target_q = tf.placeholder(shape=[None], dtype=tf.float32)
+        self.target_q = tf.compat.v1.placeholder(shape=[None], dtype=tf.float32)
 
-        self.action = tf.placeholder(shape=[None], dtype=tf.int32)
+        self.action = tf.compat.v1.placeholder(shape=[None], dtype=tf.int32)
 
         self.Q = tf.reduce_sum(tf.multiply(self.q_values,
             tf.one_hot(self.action, self.n_actions, dtype=tf.float32)), axis=1)
@@ -138,7 +138,7 @@ class ExplorationExploitationScheduler(object):
 
         if(np.random.rand(1) < eps):
             return np.random.randint(0, self.n_actions)
-        return self.DQN.best_action(state)[0]
+        return session.run(self.DQN.best_action, feed_dict={self.DQN.input:[state]})[0]
 
 class ReplayMemory(object):
     def __init__(self, size=1000000, frame_height=84, frame_width=84,
@@ -220,9 +220,9 @@ def learn(session, replay_memory, main_dqn, target_dqn, batch_size, gamma):
     # prediction pull the index we reduce the likelihood of divergence and local minima
 
     # use main dqn to pull best action
-    arg_q_max = main_dqn.best_action(new_states)
+    arg_q_max = session.run(main_dqn.best_action, feed_dict={main_dqn.input:new_states})
     # use target dqn to pull q vals
-    q_vals = target_dqn.q_values(new_states)
+    q_vals = session.run(target_dqn.q_values, feed_dict={target_dqn.input:new_states})
     double_q = q_vals[range(batch_size), arg_q_max]
 
     # Now apply Belmann equation to give prediction vs observed
@@ -230,10 +230,11 @@ def learn(session, replay_memory, main_dqn, target_dqn, batch_size, gamma):
 
     target_q = rewards + (gamme * double_q * (1 - terminal_flags))
 
-    loss = main_dqn.loss(states, target_q, actions)
+    loss, _ = session.run([main_dqn.loss, main_dqn.update],
+                            feed_dict={main_dqn.input:states,
+                            main_dqn.target_q:target_q,
+                            main_dqn.action:actions})
 
-    _ = main_dqn.update(states, target_q, actions)
-    
     return loss
 
 class TargetNetworkUpdater(object):
@@ -390,11 +391,11 @@ LAYER_IDS = ["conv1", "conv2", "conv3", "conv4", "denseAdvantage",
 
 # Scalar summaries for tensorboard: loss, average reward and evaluation score
 with tf.name_scope('Performance'):
-    LOSS_PH = tf.placeholder(tf.float32, shape=None, name='loss_summary')
+    LOSS_PH = tf.compat.v1.placeholder(tf.float32, shape=None, name='loss_summary')
     LOSS_SUMMARY = tf.summary.scalar('loss', LOSS_PH)
-    REWARD_PH = tf.placeholder(tf.float32, shape=None, name='reward_summary')
+    REWARD_PH = tf.compat.v1.placeholder(tf.float32, shape=None, name='reward_summary')
     REWARD_SUMMARY = tf.summary.scalar('reward', REWARD_PH)
-    EVAL_SCORE_PH = tf.placeholder(tf.float32, shape=None, name='evaluation_summary')
+    EVAL_SCORE_PH = tf.compat.v1.placeholder(tf.float32, shape=None, name='evaluation_summary')
     EVAL_SCORE_SUMMARY = tf.summary.scalar('evaluation_score', EVAL_SCORE_PH)
 
 PERFORMANCE_SUMMARIES = tf.summary.merge([LOSS_SUMMARY, REWARD_SUMMARY])
