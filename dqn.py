@@ -104,7 +104,7 @@ class DQN(object):
 
 class ExplorationExploitationScheduler(object):
     def __init__(self, DQN, n_actions, eps_initial=1, eps_final=0.1, eps_final_frame=0.01,
-                 eps_evaluation=0.0, eps_akeras.layersealing_frames=1000000,
+                 eps_evaluation=0.0, eps_annealing_frames=1000000,
                  replay_memory_start_size=50000, max_frames=25000000):
 
         self.DQN = DQN
@@ -113,14 +113,14 @@ class ExplorationExploitationScheduler(object):
         self.eps_final = eps_final
         self.eps_final_frame = eps_final_frame
         self.eps_evaluation = eps_evaluation
-        self.eps_akeras.layersealing_frames = eps_akeras.layersealing_frames
+        self.eps_annealing_frames = eps_annealing_frames
         self.replay_memory_start_size = replay_memory_start_size
         self.max_frames = max_frames
 
-        self.slope = -(self.eps_initial - self.eps_final) / self.eps_akeras.layersealing_frames
+        self.slope = -(self.eps_initial - self.eps_final) / self.eps_annealing_frames
         self.intercept = self.eps_initial - self.slope * self.replay_memory_start_size
         self.slope_2 = -(self.eps_final - self.eps_final_frame) \
-                        /(self.max_frames - self.eps_akeras.layersealing_frames - self.replay_memory_start_size)
+                        /(self.max_frames - self.eps_annealing_frames - self.replay_memory_start_size)
         self.intercept_2 = self.eps_final - self.slope_2 * self.max_frames
 
     def get_action(self, session, frame_number, state, evaluation=False):
@@ -130,9 +130,9 @@ class ExplorationExploitationScheduler(object):
         elif frame_number < self.replay_memory_start_size:
             eps = self.eps_initial
         elif frame_number >= self.replay_memory_start_size and frame_number < \
-                    self.replay_memory_start_size + self.eps_akeras.layersealing_frames:
+                    self.replay_memory_start_size + self.eps_annealing_frames:
             eps = self.slope * self.frame_number + self.intercept
-        elif frame_number >= self.replay_memory_start_size + self.eps_akeras.layersealing_frames:
+        elif frame_number >= self.replay_memory_start_size + self.eps_annealing_frames:
             eps = self.slope_2 * self.frame_number + self.intercept_2
 
         if(np.random.rand(1) < eps):
