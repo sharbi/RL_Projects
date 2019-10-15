@@ -24,8 +24,7 @@ class FrameProcessor(object):
         self.processed = tf.image.rgb_to_grayscale(self.frame)
         self.processed = tf.image.crop_to_bounding_box(self.processed, 34, 0, 160, 160)
         seld.processed = tf.image.resize(self.processed,
-                                                [self.frame_height, self.frame_width],
-                                                method=tf.image.ResizeMethod.NEAREST_NEIGHBOUR)
+                                                [self.frame_height, self.frame_width])
 
     def __call__(self, session, frame):
         return session.run(self.processed, feed_dict={self.frame:frame})
