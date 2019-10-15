@@ -363,7 +363,7 @@ SUMMARIES = "summaries"          # logdir for tensorboard
 RUNID = 'run_1'
 os.makedirs(PATH, exist_ok=True)
 os.makedirs(os.path.join(SUMMARIES, RUNID), exist_ok=True)
-SUMM_WRITER = tf.summary.FileWriter(os.path.join(SUMMARIES, RUNID))
+SUMM_WRITER = tf.summary.create_file_writer(os.path.join(SUMMARIES, RUNID))
 
 atari = Atari(ENV_NAME, NO_OP_STEPS)
 
