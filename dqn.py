@@ -329,7 +329,7 @@ def clip_reward(reward):
     else:
         return -1
 
-tf.reset_default_graph()
+tf.compat.v1.reset_default_graph()
 
 # Control parameters
 MAX_EPISODE_LENGTH = 18000       # Equivalent of 5 minutes of gameplay at 60 frames per second
