@@ -8,7 +8,7 @@ from skimage.transform import resize
 
 
 
-TRAIN = True
+train = True
 
 ENV_NAME = 'SpaceInvaders-v0'
 #ENV_NAME = 'PongDeterministic-v4'
@@ -527,5 +527,5 @@ def train():
             with open('rewardsEval.dat', 'a') as eval_reward_file:
                 print(frame_number, np.mean(eval_rewards), file=eval_reward_file
 
-if(TRAIN):
+if(train):
     train()
