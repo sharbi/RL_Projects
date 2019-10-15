@@ -373,9 +373,9 @@ print("The environment has the following {} actions: {}".format(atari.env.action
 
 
 # main DQN and target DQN networks:
-with tf.variable_scope('mainDQN'):
+with tf.compat.v1.variable_scope('mainDQN'):
     MAIN_DQN = DQN(atari.env.action_space.n, HIDDEN, LEARNING_RATE)   # (★★)
-with tf.variable_scope('targetDQN'):
+with tf.compat.v1.variable_scope('targetDQN'):
     TARGET_DQN = DQN(atari.env.action_space.n, HIDDEN)               # (★★)
 
 init = tf.global_variables_initializer()
