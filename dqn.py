@@ -47,40 +47,40 @@ class DQN(object):
 
         self.inputscaled = self.input/255
 
-        self.conv1 = tf.nn.conv2d(
+        self.conv1 = tf.keras.layers.conv2d(
             input=self.inputscaled, filters=32, kernel_size=[8,8], strides=4,
             kernel_initializer=tf.keras.initializers.VarianceScaling(scale=2),
-            padding='valid', activation=tf.nn.relu, use_bias=False, name='conv1'
+            padding='valid', activation=tf.keras.layers.relu, use_bias=False, name='conv1'
         )
 
-        self.conv2 = tf.nn.conv2d(
+        self.conv2 = tf.keras.layers.conv2d(
             input=self.conv1, filters=64, kernel_size=[4,4], strides=2,
             kernel_initializer=tf.keras.initializers.VarianceScaling(scale=2),
-            padding='valid', activation=tf.nn.relu, use_bias=False, name='conv2'
+            padding='valid', activation=tf.keras.layers.relu, use_bias=False, name='conv2'
         )
 
-        self.conv3 = tf.nn.conv2d(
+        self.conv3 = tf.keras.layers.conv2d(
             input=self.conv2, filters=64, kernel_size=[3,3], strides=1,
             kernel_initializer=tf.keras.initializers.VarianceScaling(scale=2),
-            padding='valid', activation=tf.nn.relu, use_bias=False, name='conv3'
+            padding='valid', activation=tf.keras.layers.relu, use_bias=False, name='conv3'
         )
 
-        self.conv4 = tf.nn.conv2d(
+        self.conv4 = tf.keras.layers.conv2d(
             input=self.conv3, filters=hidden, kernel_size=[7,7], strides=1,
             kernel_initializer=tf.keras.initializers.VarianceScaling(scale=2),
-            padding='valid', activation=tf.nn.relu, use_bias=False, name='conv4'
+            padding='valid', activation=tf.keras.layers.relu, use_bias=False, name='conv4'
         )
 
         self.valuestream, self.advantagestream = tf.split(self.conv4, 2, 3)
         self.valuestream = tf.layers.flatten(self.valuestream)
         self.advantagestream = tf.layers.flatten(self.advantagestream)
 
-        self.advantagestream = tf.nn.dense(
+        self.advantagestream = tf.keras.layers.dense(
             inputs=self.advantagestream, units=self.n_actions,
             kernel_initializer=tf.keras.initializers.VarianceScaling(scale=2), name='advantage'
         )
 
-        self.value = tf.nn.dense(
+        self.value = tf.keras.layers.dense(
             inputs=self.valuestream, units=1,
             kernel_initializer=tf.keras.initializers.VarianceScaling(scale=2), name='value'
         )
@@ -104,7 +104,7 @@ class DQN(object):
 
 class ExplorationExploitationScheduler(object):
     def __init__(self, DQN, n_actions, eps_initial=1, eps_final=0.1, eps_final_frame=0.01,
-                 eps_evaluation=0.0, eps_annealing_frames=1000000,
+                 eps_evaluation=0.0, eps_akeras.layersealing_frames=1000000,
                  replay_memory_start_size=50000, max_frames=25000000):
 
         self.DQN = DQN
@@ -113,14 +113,14 @@ class ExplorationExploitationScheduler(object):
         self.eps_final = eps_final
         self.eps_final_frame = eps_final_frame
         self.eps_evaluation = eps_evaluation
-        self.eps_annealing_frames = eps_annealing_frames
+        self.eps_akeras.layersealing_frames = eps_akeras.layersealing_frames
         self.replay_memory_start_size = replay_memory_start_size
         self.max_frames = max_frames
 
-        self.slope = -(self.eps_initial - self.eps_final) / self.eps_annealing_frames
+        self.slope = -(self.eps_initial - self.eps_final) / self.eps_akeras.layersealing_frames
         self.intercept = self.eps_initial - self.slope * self.replay_memory_start_size
         self.slope_2 = -(self.eps_final - self.eps_final_frame) \
-                        /(self.max_frames - self.eps_annealing_frames - self.replay_memory_start_size)
+                        /(self.max_frames - self.eps_akeras.layersealing_frames - self.replay_memory_start_size)
         self.intercept_2 = self.eps_final - self.slope_2 * self.max_frames
 
     def get_action(self, session, frame_number, state, evaluation=False):
@@ -130,9 +130,9 @@ class ExplorationExploitationScheduler(object):
         elif frame_number < self.replay_memory_start_size:
             eps = self.eps_initial
         elif frame_number >= self.replay_memory_start_size and frame_number < \
-                    self.replay_memory_start_size + self.eps_annealing_frames:
+                    self.replay_memory_start_size + self.eps_akeras.layersealing_frames:
             eps = self.slope * self.frame_number + self.intercept
-        elif frame_number >= self.replay_memory_start_size + self.eps_annealing_frames:
+        elif frame_number >= self.replay_memory_start_size + self.eps_akeras.layersealing_frames:
             eps = self.slope_2 * self.frame_number + self.intercept_2
 
         if(np.random.rand(1) < eps):
@@ -224,7 +224,7 @@ def learn(session, replay_memory, main_dqn, target_dqn, batch_size, gamma):
     q_vals = session.run(target_dqn.q_values, feed_dict={target_dqn.input:new_states})
     double_q = q_vals[range(batch_size), arg_q_max]
 
-    # Now apply Belmann equation to give prediction vs observed
+    # Now apply Belmakeras.layers equation to give prediction vs observed
     # 1-terminal returns 0 if terminal state, leaving just reward
 
     target_q = rewards + (gamme * double_q * (1 - terminal_flags))
@@ -344,7 +344,7 @@ REPLAY_MEMORY_START_SIZE = 50000 # Number of completely random actions,
                                  # before the agent starts learning
 MAX_FRAMES = 30000000            # Total number of frames the agent sees
 MEMORY_SIZE = 1000000            # Number of transitions stored in the replay memory
-NO_OP_STEPS = 10                 # Number of 'NOOP' or 'FIRE' actions at the beginning of an
+NO_OP_STEPS = 10                 # Number of 'NOOP' or 'FIRE' actions at the begikeras.layersing of an
                                  # evaluation episode
 UPDATE_FREQ = 4                  # Every four actions a gradient descend step is performed
 HIDDEN = 1024                    # Number of filters in the final convolutional layer. The output
