@@ -527,4 +527,6 @@ def train():
             with open('rewardsEval.dat', 'a') as eval_reward_file:
                 print(frame_number, np.mean(eval_rewards), file=eval_reward_file
 
-train()
+
+if __name__ == '__main__':
+    train()
