@@ -49,25 +49,25 @@ class DQN(object):
 
         self.conv1 = tf.nn.conv2d(
             input=self.inputscaled, filters=32, kernel_size=[8,8], strides=4,
-            kernel_initializer=tf.variance_scaling_initializer(scale=2),
+            kernel_initializer=tf.contrib.layers.variance_scaling_initializer(scale=2),
             padding='valid', activation=tf.nn.relu, use_bias=False, name='conv1'
         )
 
         self.conv2 = tf.nn.conv2d(
             input=self.conv1, filters=64, kernel_size=[4,4], strides=2,
-            kernel_initializer=tf.variance_scaling_initializer(scale=2),
+            kernel_initializer=tf.contrib.layers.variance_scaling_initializer(scale=2),
             padding='valid', activation=tf.nn.relu, use_bias=False, name='conv2'
         )
 
         self.conv3 = tf.nn.conv2d(
             input=self.conv2, filters=64, kernel_size=[3,3], strides=1,
-            kernel_initializer=tf.variance_scaling_initializer(scale=2),
+            kernel_initializer=tf.contrib.layers.variance_scaling_initializer(scale=2),
             padding='valid', activation=tf.nn.relu, use_bias=False, name='conv3'
         )
 
         self.conv4 = tf.nn.conv2d(
             input=self.conv3, filters=hidden, kernel_size=[7,7], strides=1,
-            kernel_initializer=tf.variance_scaling_initializer(scale=2),
+            kernel_initializer=tf.contrib.layers.variance_scaling_initializer(scale=2),
             padding='valid', activation=tf.nn.relu, use_bias=False, name='conv4'
         )
 
@@ -77,12 +77,12 @@ class DQN(object):
 
         self.advantagestream = tf.nn.dense(
             inputs=self.advantagestream, units=self.n_actions,
-            kernel_initializer=tf.variance_scaling_initializer(scale=2), name='advantage'
+            kernel_initializer=tf.contrib.layers.variance_scaling_initializer(scale=2), name='advantage'
         )
 
         self.value = tf.nn.dense(
             inputs=self.valuestream, units=1,
-            kernel_initializer=tf.variance_scaling_initializer(scale=2), name='value'
+            kernel_initializer=tf.contrib.layers.variance_scaling_initializer(scale=2), name='value'
         )
 
         self.q_values = self.value + tf.subtract(self.advantage,
