@@ -6,7 +6,7 @@ import gym
 import imageio
 from skimage.transform import resize
 
-
+tf.compat.v1.disable_eager_execution()
 
 train = True
 
