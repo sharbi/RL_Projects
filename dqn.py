@@ -47,25 +47,25 @@ class DQN(object):
 
         self.inputscaled = self.input/255
 
-        self.conv1 = tf.keras.layers.conv2d(
+        self.conv1 = tf.keras.layers.Conv2D(
             input=self.inputscaled, filters=32, kernel_size=[8,8], strides=4,
             kernel_initializer=tf.keras.initializers.VarianceScaling(scale=2),
             padding='valid', activation=tf.keras.layers.relu, use_bias=False, name='conv1'
         )
 
-        self.conv2 = tf.keras.layers.conv2d(
+        self.conv2 = tf.keras.layers.Conv2D(
             input=self.conv1, filters=64, kernel_size=[4,4], strides=2,
             kernel_initializer=tf.keras.initializers.VarianceScaling(scale=2),
             padding='valid', activation=tf.keras.layers.relu, use_bias=False, name='conv2'
         )
 
-        self.conv3 = tf.keras.layers.conv2d(
+        self.conv3 = tf.keras.layers.Conv2D(
             input=self.conv2, filters=64, kernel_size=[3,3], strides=1,
             kernel_initializer=tf.keras.initializers.VarianceScaling(scale=2),
             padding='valid', activation=tf.keras.layers.relu, use_bias=False, name='conv3'
         )
 
-        self.conv4 = tf.keras.layers.conv2d(
+        self.conv4 = tf.keras.layers.Conv2D(
             input=self.conv3, filters=hidden, kernel_size=[7,7], strides=1,
             kernel_initializer=tf.keras.initializers.VarianceScaling(scale=2),
             padding='valid', activation=tf.keras.layers.relu, use_bias=False, name='conv4'
