@@ -205,8 +205,8 @@ class ReplayMemory(object):
             self.states[i] = self._get_state(idx - 1)
             self.new_states = self._get_state(idx)
 
-        return np.transpose(self.states, axes=(0,2,3,1)), self.actions[self.indices],
-            self.rewards[self.indices], np.transpose(self.new_states, axes=(0,2,3,1)),
+        return np.transpose(self.states, axes=(0,2,3,1)), self.actions[self.indices],\
+            self.rewards[self.indices], np.transpose(self.new_states, axes=(0,2,3,1)),\
             self.terminal_flags[self.indices]
 
 
