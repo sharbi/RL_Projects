@@ -21,7 +21,7 @@ class FrameProcessor(object):
         self.frame_height = frame_height
         self.frame_width = frame_width
         self.frame = tf.placeholder(shape=[210, 160, 3], dtype=tf.uint8)
-        self.processed = tf.image.rgb_to_grayscale(frame)
+        self.processed = tf.image.rgb_to_grayscale(self.frame)
         self.processed = tf.image.crop_to_bounding_box(self.processed, 34, 0, 160, 160)
         seld.processed = tf.image.resize_image(self.processed,
                                                 [self.frame_height, self.frame_width],
