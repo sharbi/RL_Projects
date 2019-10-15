@@ -43,7 +43,7 @@ class DQN(object):
         self.agent_history_length = agent_history_length
 
         self.input = tf.compat.v1.placeholder(shape=[None, self.frame_height,
-                                    self.frame_width, self.agent_history_length])
+                                    self.frame_width, self.agent_history_length], dtype=tf.float32)
 
         self.inputscaled = self.input/255
 
