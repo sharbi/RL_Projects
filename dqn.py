@@ -525,8 +525,8 @@ def train():
             summ = sess.run(EVAL_SCORE_SUMMARY, feed_dict={EVAL_SCORE_PH:np.mean(eval_rewards)})
             SUMM_WRITER.add_summary(summ, frame_number)
             with open('rewardsEval.dat', 'a') as eval_reward_file:
-                print(frame_number, np.mean(eval_rewards), file=eval_reward_file
+                print(frame_number, np.mean(eval_rewards), file=eval_reward_file)
 
 
-if __name__ == '__main__':
+if(train):
     train()
