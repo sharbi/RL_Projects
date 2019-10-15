@@ -28,7 +28,7 @@ class FrameProcessor(object):
                                                 method=tf.image.ResizeMethod.NEAREST_NEIGHBOUR)
 
     def __call__(self, session, frame):
-        return session.run(self.processed, feed_dict={self.frame:frame})
+        return self.processed(self.frame)
 
 
 
@@ -138,7 +138,7 @@ class ExplorationExploitationScheduler(object):
 
         if(np.random.rand(1) < eps):
             return np.random.randint(0, self.n_actions)
-        return session.run(self.DQN.best_action, feed_dict={self.DQN.input:[state]})[0]
+        return self.DQN.best_action(state)[0]
 
 class ReplayMemory(object):
     def __init__(self, size=1000000, frame_height=84, frame_width=84,
@@ -220,9 +220,9 @@ def learn(session, replay_memory, main_dqn, target_dqn, batch_size, gamma):
     # prediction pull the index we reduce the likelihood of divergence and local minima
 
     # use main dqn to pull best action
-    arg_q_max = session.run(main_dqn.best_action, feed_dict={main_dqn.input:new_states})
+    arg_q_max = main_dqn.best_action(new_states)
     # use target dqn to pull q vals
-    q_vals = session.run(target_dqn.q_values, feed_dict={target_dqn.input:new_states})
+    q_vals = target_dqn.q_values(new_states)
     double_q = q_vals[range(batch_size), arg_q_max]
 
     # Now apply Belmann equation to give prediction vs observed
@@ -230,11 +230,10 @@ def learn(session, replay_memory, main_dqn, target_dqn, batch_size, gamma):
 
     target_q = rewards + (gamme * double_q * (1 - terminal_flags))
 
-    loss, _ = session.run([main_dqn.loss, main_dqn.update],
-                            feed_dict={main_dqn.input:states,
-                            main_dqn.target_q:target_q,
-                            main_dqn.action:actions})
+    loss = main_dqn.loss(states, target_q, actions)
 
+    _ = main_dqn.update(states, target_q, actions)
+    
     return loss
 
 class TargetNetworkUpdater(object):
