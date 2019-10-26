@@ -4,6 +4,7 @@ import numpy as np
 import random
 import imageio
 from progbar import ProgBar
+from skimage.transform import resize
 
 
 from DDQN import DuelingAgent
