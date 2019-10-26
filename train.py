@@ -39,7 +39,7 @@ def train(env, agent, max_episodes, max_steps, batch_size, target_update):
             #env.render()
             action = agent.get_action(state, frame_number)
             next_state, reward, done, _ = env.step(action)
-            if episode % 100:
+            if episode % 100 == 0:
                 gif = True
                 frames_for_gif.append(next_state)
             frame_number += 1
@@ -60,6 +60,10 @@ def train(env, agent, max_episodes, max_steps, batch_size, target_update):
 
         if episode % target_update == 0:
             agent.run_target_update()
+
+        if episode % 200 == 0:
+            torch.save(agent.main_model.state_dict(), "./output/models/model_episode_" + str(episode) + ".pkl")
+
 
         if gif:
             try:
