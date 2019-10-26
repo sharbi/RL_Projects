@@ -63,7 +63,7 @@ def train(env, agent, max_episodes, max_steps, batch_size, target_update):
 
         if gif:
             try:
-                generate_gif(frame_number, frames_for_gif, episode_rewards[0], '/output/gifs/')
+                generate_gif(frame_number, frames_for_gif, episode_rewards[0], './output/gifs/')
                 frames_for_gif = []
             except IndexError:
                 print("Game did not finish")
