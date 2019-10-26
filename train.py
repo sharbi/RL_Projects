@@ -35,7 +35,7 @@ def train(env, agent, max_episodes, max_steps, batch_size, target_update):
         gif = False
 
         for step in range(max_steps):
-            env.render()
+            #env.render()
             action = agent.get_action(state, frame_number)
             next_state, reward, done, _ = env.step(action)
             if episode % 100:
