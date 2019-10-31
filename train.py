@@ -62,7 +62,7 @@ def train(env, agent, max_episodes, max_steps, batch_size, target_update):
         if frame_number % target_update == 0:
             agent.run_target_update()
 
-        if episode % 200 == 0:
+        if episode % 200 and frame_number > REPLAY_MEMORY_START_SIZE == 0:
             torch.save(agent.main_model.state_dict(), "./output/models/model_episode_" + str(episode) + ".pkl")
 
 
@@ -73,7 +73,7 @@ def train(env, agent, max_episodes, max_steps, batch_size, target_update):
                 print("Game did not finish")
                 gif = False
 
-        
+
     return episode_rewards
 
 env_id = "SpaceInvadersNoFrameskip-v0"
