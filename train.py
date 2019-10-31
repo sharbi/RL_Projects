@@ -34,7 +34,7 @@ def train(env, agent, max_episodes, max_steps, batch_size, target_update):
         episode_reward = 0
         frames_for_gif = []
         gif = False
-        if episode % 100:
+        if episode % 100 == 0:
             gif = True
 
         for step in range(max_steps):
