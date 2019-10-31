@@ -46,9 +46,9 @@ def train(env, agent, max_episodes, max_steps, batch_size, target_update):
             agent.replay_buffer.push(state, action, reward, next_state, done)
             episode_reward += reward
 
-            if len(agent.replay_buffer) > batch_size and episode % 10 == 0:
+            if frame_number % 4 and episode % 10 == 0 and frame_number > REPLAY_MEMORY_START_SIZE:
                 agent.update(batch_size, True, episode)
-            elif len(agent.replay_buffer) > batch_size:
+            elif frame_number % 4 and frame_number > REPLAY_MEMORY_START_SIZE:
                 agent.update(batch_size, False, episode)
 
             if done or step == max_steps - 1:
@@ -58,7 +58,7 @@ def train(env, agent, max_episodes, max_steps, batch_size, target_update):
 
             state = next_state
 
-        if episode % target_update == 0:
+        if frame_number % target_update == 0:
             agent.run_target_update()
 
         if episode % 200 == 0:
@@ -79,8 +79,9 @@ def train(env, agent, max_episodes, max_steps, batch_size, target_update):
 env_id = "SpaceInvadersNoFrameskip-v0"
 MAX_EPISODES = 1000000
 MAX_STEPS = 30000000
+REPLAY_MEMORY_START_SIZE = 50000
 BATCH_SIZE = 32
-TARGET_UPDATE = 10
+TARGET_UPDATE = 10000
 
 env = make_atari(env_id)
 env = wrap_deepmind(env)
