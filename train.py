@@ -34,13 +34,14 @@ def train(env, agent, max_episodes, max_steps, batch_size, target_update):
         episode_reward = 0
         frames_for_gif = []
         gif = False
+        if episode % 100:
+            gif = True
 
         for step in range(max_steps):
             #env.render()
             action = agent.get_action(state, frame_number)
             next_state, reward, done, _ = env.step(action)
-            if episode % 100 == 0:
-                gif = True
+            if gif:
                 frames_for_gif.append(next_state)
             frame_number += 1
             agent.replay_buffer.push(state, action, reward, next_state, done)
@@ -68,12 +69,11 @@ def train(env, agent, max_episodes, max_steps, batch_size, target_update):
         if gif:
             try:
                 generate_gif(frame_number, frames_for_gif, episode_rewards[0], './output/gifs/')
-                frames_for_gif = []
             except IndexError:
                 print("Game did not finish")
                 gif = False
 
-
+        
     return episode_rewards
 
 env_id = "SpaceInvadersNoFrameskip-v0"
