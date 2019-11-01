@@ -57,7 +57,7 @@ class DuelingAgent:
         max_next_q = max_next_q.view(max_next_q.size(0), 1)
 
         # Get target value with Bellmann equation. 1-done ensures only reward is used in terminal
-        target_q = rewards.squeeze + (self.gamma*max_next_q * (1-dones))
+        target_q = rewards + (self.gamma*max_next_q * (1-dones))
 
         #print(current_q)
         #print(target_q)
