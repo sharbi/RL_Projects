@@ -49,7 +49,7 @@ class DuelingAgent:
 
         # First get the predicted current Q using the main network
         current_q = self.main_model.forward(states).gather(1, actions.unsqueeze(1))
-        #current_q = current_q.squeeze(1)
+        current_q = current_q.squeeze(1)
 
         # Next get the q_value for the next state by getting the action from the
         # main network, but using that list location to get the q_val from the target network
