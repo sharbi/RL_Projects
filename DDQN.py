@@ -47,31 +47,31 @@ class DuelingAgent:
         next_states = torch.FloatTensor(next_states).to(self.device)
         dones = torch.FloatTensor(dones).to(self.device)
 
-        # First get the predicted current Q using the main network
-        current_q = self.main_model.forward(states).gather(1, actions.unsqueeze(1))
-        current_q = current_q.squeeze(1)
+        actions = actions.view(actions.size(0), 1)
+        dones = dones.view(dones.size(0), 1)
 
-        # Next get the q_value for the next state by getting the action from the
-        # main network, but using that list location to get the q_val from the target network
-        arg_q_max = torch.argmax(self.main_model.forward(next_states), dim=1)
-        q_vals = self.target_model(next_states)
-        double_q = q_vals[range(batch_size), arg_q_max]
+        # First get the predicted current Q using the main network
+        current_q = self.main_model.forward(states).gather(1, actions)
+        next_q = self.target_model.forward(next_states)
+        max_next_q = torch.max(next_q, 1)[0]
+        max_next_q = max_next_q.view(max_next_q.size(0), 1)
 
         # Get target value with Bellmann equation. 1-done ensures only reward is used in terminal
-        target_q = rewards.squeeze(1) + (self.gamma*double_q * (1-dones))
+        target_q = rewards.squeeze + (self.gamma*max_next_q * (1-dones))
 
         #print(current_q)
         #print(target_q)
 
         # Loss is Hueber loss, clipped between 1 and -1
-        loss = F.smooth_l1_loss(current_q, target_q)
+        loss = F.smooth_l1_loss(current_q, target_q.detach())
 
         loss_clipped = torch.clamp(loss, min=-1, max=1)
 
         return loss_clipped
 
     def run_target_update(self):
-        self.target_model.load_state_dict(self.main_model.state_dict())
+        for target_param, param in zip(self.target_model.parameters(), self.model.parameters()):
+            target_param.data_copy_(0.01 * param + (1 - 0.01) * target_param)
 
     def update(self, batch_size, write_to_board, episodes):
 
