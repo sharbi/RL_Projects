@@ -14,7 +14,7 @@ from explore_exploit_scheduler import Explore_Exploit_Sched
 
 class DuelingAgent:
 
-    def __init__(self, env, learning_rate=3e-4, gamma=0.99, buffer_size=1000000):
+    def __init__(self, env, learning_rate=2.5e-4, gamma=0.99, buffer_size=1000000):
         self.env = env
         self.learning_rate = learning_rate
         self.gamma = gamma
@@ -32,9 +32,9 @@ class DuelingAgent:
         self.optimizer = optim.Adam(self.main_model.parameters())
         self.explore_exploit_sched = Explore_Exploit_Sched(self.main_model, env.action_space.n)
 
-    def get_action(self, state, frame_number):
+    def get_action(self, state, frame_number, evaluation=False):
         state = torch.FloatTensor(state).float().unsqueeze(0).to(self.device)
-        action = self.explore_exploit_sched.get_action(frame_number, state)
+        action = self.explore_exploit_sched.get_action(frame_number, state, evaluation)
 
         return action
 
@@ -59,6 +59,9 @@ class DuelingAgent:
 
         # Get target value with Bellmann equation. 1-done ensures only reward is used in terminal
         target_q = rewards.squeeze(1) + (self.gamma*double_q * (1-dones))
+
+        print(current_q)
+        print(target_q)
 
         # Loss is Hueber loss, clipped between 1 and -1
         loss = F.smooth_l1_loss(current_q, target_q)
