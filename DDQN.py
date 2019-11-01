@@ -60,8 +60,8 @@ class DuelingAgent:
         # Get target value with Bellmann equation. 1-done ensures only reward is used in terminal
         target_q = rewards.squeeze(1) + (self.gamma*double_q * (1-dones))
 
-        print(current_q)
-        print(target_q)
+        #print(current_q)
+        #print(target_q)
 
         # Loss is Hueber loss, clipped between 1 and -1
         loss = F.smooth_l1_loss(current_q, target_q)
