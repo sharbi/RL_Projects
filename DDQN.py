@@ -48,7 +48,7 @@ class DuelingAgent:
         dones = torch.FloatTensor(dones).to(self.device)
 
         # First get the predicted current Q using the main network
-        current_q = self.main_model.forward(states).gather(1, actions)
+        current_q = self.main_model.forward(states).gather(1, actions.unsqueeze(1))
         #current_q = current_q.squeeze(1)
 
         # Next get the q_value for the next state by getting the action from the
