@@ -34,7 +34,7 @@ class DuelingAgent:
 
     def get_action(self, state, frame_number, evaluation=False):
         state = torch.FloatTensor(state).float().unsqueeze(0).to(self.device)
-        action = self.explore_exploit_sched.get_action(frame_number, state, evaluation)
+        action = self.explore_exploit_sched.get_action(frame_number, state, self.device, evaluation)
 
         return action
 
