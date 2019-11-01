@@ -47,6 +47,9 @@ def train(env, agent, max_episodes, max_steps, batch_size, target_update):
             agent.replay_buffer.push(state, action, reward, next_state, done)
             episode_reward += reward
 
+            print(action)
+            print(done)
+
             if frame_number % 4 and episode % 10 == 0 and frame_number > REPLAY_MEMORY_START_SIZE:
                 agent.update(batch_size, True, episode)
             elif frame_number % 4 and frame_number > REPLAY_MEMORY_START_SIZE:
