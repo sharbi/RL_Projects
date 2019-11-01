@@ -48,13 +48,13 @@ class DuelingAgent:
         dones = torch.FloatTensor(dones).to(self.device)
 
         # First get the predicted current Q using the main network
-        current_q = self.main_model.forward(states).gather(1, actions.unsqueeze(1))
-        current_q = current_q.squeeze(1)
+        current_q = self.main_model.forward(states).gather(1, actions)
+        #current_q = current_q.squeeze(1)
 
         # Next get the q_value for the next state by getting the action from the
         # main network, but using that list location to get the q_val from the target network
         arg_q_max = torch.argmax(self.main_model.forward(next_states), dim=1)
-        q_vals = self.target_model.forward(next_states)
+        q_vals = self.target_model(next_states)
         double_q = q_vals[range(batch_size), arg_q_max]
 
         # Get target value with Bellmann equation. 1-done ensures only reward is used in terminal
